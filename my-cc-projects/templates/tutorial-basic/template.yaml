@@ -1,0 +1,117 @@
+alias:  tutorial-basic
+description:    This is a basic composite template for CC
+version:    1.0
+dslVersion: 1.1
+environments:
+    default:
+        wmVersion: 10.3
+        versionSuffix: 103
+        installationPath: /opt/softwareag
+        minMemory:  1024
+        maxMemory:  1024
+        platform: RHEL
+        spm.port: 8192
+    pc:
+        installationPath: C:\SoftwareAG${versionSuffix}
+        platform: win64
+    staging:
+        minMemory:  3072
+        maxMemory:  3072
+    preprod:
+        minMemory:  8192
+        maxMemory:  8192
+    prod:
+        minMemory:  8192
+        maxMemory:  8192
+        
+layers:
+    default:
+        productRepo: wM-103-${platform}
+        fixRepo: Empower
+    
+    management:
+    
+    esb:
+    
+    messaging:
+    
+    apimgmt:
+    
+    
+templates:
+
+    apimgmt:
+    
+    integration:
+    
+    
+products:
+    api-gateway:
+    
+    is-server:
+    
+    um-server:
+    
+    terracotta:
+    
+    centrasite:
+    
+    api-portal:
+    
+fixes:  []
+
+nodes:
+    default:
+        aliasMapping:
+            policy: INDEX
+            prefix: ${node.alias.prefix} 
+        default:
+            port: ${spm.port}
+            secure: false      
+            credentials: DEFAULT_ADMINISTRATOR      
+            bootstrapInfo:      
+                cc.installer: ${cc.installer}      
+                installDir: /opt/softwareag      
+                platform: lnxamd64
+    ${company.env}:
+        node1:
+            host: localhost
+            port: ${spm.port}
+            bootstrapInfo:
+                installer: ${cc.windows.installer}
+                installDir: ${installationPath}
+    ${company.env}:      
+        node1:      
+            host:${company.staging.host}
+            port: ${spm.port}
+    ${company.env}:
+        node1:
+            host:${company.preprod.host1}
+            port: ${spm.port}
+        node2:
+            host:${company.preprod.host2}
+            port: ${spm.port}
+    ${company.env}:
+        node1:
+            host:${company.prod.host1}
+            port: ${spm.port}
+        node2:
+            host:${company.prod.host2}
+            port: ${spm.port}
+        node3:
+            host:${company.prod.host3}
+            port: ${spm.port}
+provision:
+    default:
+        management: pc
+    ${company.env}:
+        ${company.solution.type}: ${company.env}
+repositories:
+    product:
+        wM-103-RHEL:
+            location: /opt/installationFiles/wm_103_RHEL.zip
+        wM-103-WIN64:
+            location: C:\SAG_Softwares\wm_103_WIN64.zip
+    fix:
+        wM-103-fixes:
+            location: C:\SAG_Softwares\wm_103_Fixes.zip
